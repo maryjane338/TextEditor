@@ -46,13 +46,22 @@ class MainWin(QWidget):
     def create_new(self):
         self.line.clear()
         self.output.clear()
+        self.symbols.setText('Всего символов:')
+        self.words.setText('Всего слов:')
+        self.the_longest_word.setText('Самое длинное слово:')
+        self.the_shortest_word.setText('Самое короткое слово:')
+        self.the_most_common_word.setText('Самое частое слово:')
+
 
     def save(self):
         file_name = self.line.text()
-        if file_name:
+        empty = self.output.toPlainText()
+        if empty == '':
+            self.output.setPlainText('Ваш файл пуст')
+        else:
             with open(file_name, 'w') as file:
                 file.write(self.output.toPlainText())
-        self.file_information()
+                self.file_information()
 
     def open(self):
         file_name = self.line.text()
@@ -86,9 +95,9 @@ class MainWin(QWidget):
                         common_words:
                     common_words.append(words_without_punctuation[i])
         if not common_words:
-            self.the_most_common_word.setText(f'Самое повторяющееся слово:\n-')
+            self.the_most_common_word.setText(f'Самое частое слово:\n-')
         else:
-            self.the_most_common_word.setText(f'Самое повторяющееся слово:\n{common_words[0]}')
+            self.the_most_common_word.setText(f'Самое частое слово:\n{common_words[0]}')
 
 def main():
     app = QApplication([])
