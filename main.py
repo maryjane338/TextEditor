@@ -10,6 +10,7 @@ class MainWin(QWidget):
 
     def initUI(self):
         self.setWindowTitle('Текстовый редактор')
+        self.resize(400, 300)
 
         self.line = QLineEdit()
         btn_create_new = QPushButton('Создать файл')
@@ -57,19 +58,25 @@ class MainWin(QWidget):
         file_name = self.line.text()
         empty = self.output.toPlainText()
         if empty == '':
-            self.output.setPlainText('Ваш файл пуст')
+            self.output.setPlainText('Ваш файл пуст!')
+        if file_name == '':
+            self.output.insertPlainText('Введите имя вашего файла!\n')
         else:
             with open(file_name, 'w') as file:
                 file.write(self.output.toPlainText())
                 self.file_information()
 
     def open(self):
-        file_name = self.line.text()
-        file = QFile(file_name)
-        file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text)
-        content = file.readAll().data().decode('Windows-1251')
-        self.output.setPlainText(content)
-        self.file_information()
+        file = QFileDialog.getOpenFileName(self, 'Выберите файл')[0]
+        if file:
+            with open(file, 'r') as f:
+                data = f.read()
+                self.output.setText(data)
+                self.file_information()
+            file_name = (file.split('/'))[-1]
+            self.line.setText(file_name)
+        else:
+            self.output.setText('Файл не выбран!')
 
     def file_information(self):
         text = self.output.toPlainText()
